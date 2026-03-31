@@ -9,14 +9,14 @@ transaction="01000000000101c8b0928edebbec5e698d5f86d0474595d9f6a5b2e4e3772cd9d10
 # get the txid of this transaction
 txid=$(bitcoin-cli -regtest decoderawtransaction "$transaction" | jq -r '.txid')
 
-# get the output value
+# get the output values
 output_value=$(bitcoin-cli -regtest decoderawtransaction "$transaction" | jq -r '.vout[0].value')
 
 amount_sats=20000000
 amount_to_send=$(echo "scale=8; $amount_sats/100000000" | bc | sed 's/^\./0./')
 recipient_address=2MvLcssW49n9atmksjwg2ZCMsEMsoj3pzUP
 
-# Create PSBT   
+# Create PSBT 
 psbt=$(bitcoin-cli -regtest createpsbt "[{\"txid\":\"$txid\",\"vout\":0},{\"txid\":\"$txid\",\"vout\":1}]" "{\"$recipient_address\":$amount_to_send}")
 
 echo "$psbt"
