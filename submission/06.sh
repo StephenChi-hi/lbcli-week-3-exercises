@@ -6,4 +6,4 @@ transaction=cHNidP8BAHsCAAAAAhuVpgVRdOxkuC7wW2rvw4800OVxl+QCgezYKHtCYN7GAQAAAAD/
 
 
 
-bitcoin-cli decodepsbt "$transaction" | jq -r '.tx.txid'
+bitcoin-cli -regtest decodepsbt "$transaction" | jq -r '.tx.txid'
