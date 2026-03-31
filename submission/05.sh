@@ -17,4 +17,4 @@ psbt=$(bitcoin-cli -regtest -named createpsbt \
   inputs="[ { \"txid\": \"$txid\", \"vout\": $vout } ]" \
   outputs="{ \"$recipient_address\": $amount_to_send }")
 
-echo "PSBT: $psbt"
+echo "$psbt"
