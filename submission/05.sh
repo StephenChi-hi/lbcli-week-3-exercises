@@ -9,11 +9,14 @@ transaction="01000000000101c8b0928edebbec5e698d5f86d0474595d9f6a5b2e4e3772cd9d10
 # the wallet
 bitcoin-cli -regtest loadwallet builderswallet 2>/dev/null || true
 
+address=$(bitcoin-cli -regtest -rpcwallet=builderswallet getnewaddress)
+bitcoin-cli -regtest generatetoaddress 101 "$address" > /dev/null
+
 amount_sats=20000000
 amount_to_send=$(echo "scale=8; $amount_sats/100000000" | bc | sed 's/^\./0./')
 recipient_address=2MvLcssW49n9atmksjwg2ZCMsEMsoj3pzUP
 
-# Create PSBT using wallet-funded method and  a fee rate will added
+# Create PSBT using wallet-funded method and the  fee rate there
 result=$(bitcoin-cli -regtest -rpcwallet=builderswallet walletcreatefundedpsbt "[]" "{\"$recipient_address\":$amount_to_send}" 0 "{\"feeRate\":0.0001}")
 
 psbt=$(echo "$result" | jq -r '.psbt')
