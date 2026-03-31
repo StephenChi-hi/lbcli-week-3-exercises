@@ -6,13 +6,14 @@
 
 transaction="01000000000101c8b0928edebbec5e698d5f86d0474595d9f6a5b2e4e3772cd9d1005f23bdef772500000000ffffffff0276b4fa0000000000160014f848fe5267491a8a5d32423de4b0a24d1065c6030e9c6e000000000016001434d14a23d2ba08d3e3edee9172f0c97f046266fb0247304402205fee57960883f6d69acf283192785f1147a3e11b97cf01a210cf7e9916500c040220483de1c51af5027440565caead6c1064bac92cb477b536e060f004c733c45128012102d12b6b907c5a1ef025d0924a29e354f6d7b1b11b5a7ddff94710d6f0042f3da800000000"
 
+txid=$(bitcoin-cli -regtest decoderawtransaction "$transaction" | jq -r '.txid')
+
+output_value=$(bitcoin-cli -regtest decoderawtransaction "$transaction" | jq -r '.vout[0].value')
+
 amount_sats=20000000
 amount_to_send=$(echo "scale=8; $amount_sats/100000000" | bc | sed 's/^\./0./')
 recipient_address=2MvLcssW49n9atmksjwg2ZCMsEMsoj3pzUP
 
-# Create PSBT using wallet-funded method and  a fee rate will added
-result=$(bitcoin-cli -regtest -rpcwallet=builderswallet walletcreatefundedpsbt "[]" "{\"$recipient_address\":$amount_to_send}" 0 "{\"feeRate\":0.0001}")
-
-psbt=$(echo "$result" | jq -r '.psbt')
+psbt=$(bitcoin-cli -regtest createpsbt "[{\"txid\":\"$txid\",\"vout\":0},{\"txid\":\"$txid\",\"vout\":1}]" "{\"$recipient_address\":$amount_to_send}")
 
 echo "$psbt"
