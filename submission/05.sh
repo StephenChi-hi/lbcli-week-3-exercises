@@ -13,8 +13,8 @@ amount_sats=20000000
 amount_to_send=$(echo "scale=8; $amount_sats/100000000" | bc | sed 's/^\./0./')
 recipient_address=2MvLcssW49n9atmksjwg2ZCMsEMsoj3pzUP
 
-# Create PSBT using wallet-funded method
-result=$(bitcoin-cli -regtest -rpcwallet=builderswallet walletcreatefundedpsbt "[]" "{\"$recipient_address\":$amount_to_send}")
+# Create PSBT using wallet-funded method and  a fee rate will added
+result=$(bitcoin-cli -regtest -rpcwallet=builderswallet walletcreatefundedpsbt "[]" "{\"$recipient_address\":$amount_to_send}" 0 "{\"feeRate\":0.0001}")
 
 psbt=$(echo "$result" | jq -r '.psbt')
 
