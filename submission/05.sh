@@ -12,9 +12,10 @@ amount_sats=20000000
 amount_to_send=$(echo "scale=8; $amount_sats/100000000" | bc | sed 's/^\./0./')
 recipient_address=2MvLcssW49n9atmksjwg2ZCMsEMsoj3pzUP
 
+# Create inputs and outputs as JSON arrays/objects
+inputs="[{\"txid\":\"$txid\",\"vout\":$vout}]"
+outputs="{\"$recipient_address\":$amount_to_send}"
 
-psbt=$(bitcoin-cli -regtest -named createpsbt \
-  inputs="[ { \"txid\": \"$txid\", \"vout\": $vout } ]" \
-  outputs="{ \"$recipient_address\": $amount_to_send }")
+psbt=$(bitcoin-cli -regtest createpsbt "$inputs" "$outputs")
 
 echo "$psbt"
